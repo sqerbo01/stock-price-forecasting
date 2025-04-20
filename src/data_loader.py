@@ -13,3 +13,9 @@ def download_stock_data(ticker: str, start_date: str, end_date: str) -> pd.DataF
     
     df = df.reset_index()
     return df
+
+def save_to_csv(df: pd.DataFrame, path: str) -> None:
+    """
+    Save the DataFrame to a CSV file.
+    """
+    df.to_csv(path, index=False)
