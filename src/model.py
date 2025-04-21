@@ -3,9 +3,14 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import VotingClassifier
+from sklearn.linear_model import LogisticRegression
+
+
 
 def train_model(df: pd.DataFrame):
     """
@@ -87,10 +92,38 @@ def train_classification_model(df: pd.DataFrame):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
 
-    clf = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
+    #clf = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
+    clf = XGBClassifier(n_estimators=100, max_depth=5, learning_rate=0.1, use_label_encoder=False, eval_metric='logloss', random_state=42)
     clf.fit(X_train, y_train)
 
     y_pred = clf.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
 
     return clf, X_test, y_test, y_pred, acc
+
+
+def train_ensemble_classification_model(df: pd.DataFrame):
+    df = df.copy()
+    df['Target'] = (df['Close'].shift(-1) > df['Close']).astype(int)
+    df = df.dropna()
+
+    feature_cols = ['Return', 'MA_5', 'MA_10', 'RSI', 'MACD', 'MACD_Signal']
+    X = df[feature_cols]
+    y = df['Target']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+
+    ensemble = VotingClassifier(
+        estimators=[
+            ('xgb', XGBClassifier(n_estimators=100, max_depth=5, learning_rate=0.1, use_label_encoder=False, eval_metric='logloss')),
+            ('rf', RandomForestClassifier(n_estimators=100, max_depth=5)),
+            ('lr', LogisticRegression(max_iter=1000))
+        ],
+        voting='soft'
+    )
+
+    ensemble.fit(X_train, y_train)
+    y_pred = ensemble.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+
+    return ensemble, X_test, y_test, y_pred, acc

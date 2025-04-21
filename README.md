@@ -1,27 +1,49 @@
-# stock-price-forecasting
+# Stock Price Forecasting
 
-This project aims to predict future stock prices using historical data. It starts with a simple machine learning model based only on time series features and will be expanded later with sentiment analysis and macroeconomic indicators.
+This project explores multiple strategies for forecasting stock prices and simulating investment strategies using historical data. It combines regression and classification models with technical analysis indicators to assess how well machine learning can outperform the market.
 
-## Project Structure
+## 📁 Project Structure
 
-- `data/`: Contains raw data (e.g., CSV downloaded from Yahoo Finance).
-- `notebooks/`: Jupyter notebooks for data exploration and modeling.
-- `src/`: Python modules for data loading, feature engineering, and modeling.
-- `plots/`: Folder to save generated plots.
-- `requirements.txt`: List of dependencies.
+- `data/`: Raw CSV files (e.g., from Yahoo Finance).
+- `notebooks/`: Jupyter notebooks for exploration, training, and evaluation.
+- `src/`: Python modules for data loading, feature engineering, modeling, and technical indicators.
+- `plots/`: Exported visualizations of model predictions and trading performance.
+- `requirements.txt`: Project dependencies.
 
-## Phase 1 – Historical Data Forecasting
+## ✅ What’s Implemented
 
-The current phase uses only historical stock data to predict the future adjusted closing price. A simple XGBoost regression model is trained and evaluated.
+### 🔹 Regression (XGBoost)
+- Predicts next-day price using:
+  - Daily return
+  - Moving averages (5, 10 days)
+- Evaluated with RMSE and actual vs predicted plots
 
-## Future Plans
+### 🔹 Classification (Random Forest, XGBoost, Voting Ensemble)
+- Predicts **direction** of price movement (up/down)
+- Accuracy measured with:
+  - Classification accuracy
+  - Simulated trading strategy
+  - Comparison to market performance
 
-- Add technical indicators
-- Incorporate sentiment data (e.g., from Twitter and financial news)
-- Explore deep learning with LSTM
-- Deploy a Streamlit dashboard
+### 🔹 Technical Indicators
+- RSI (Relative Strength Index)
+- Bollinger Bands
+- MACD (Moving Average Convergence Divergence)
 
-## Getting Started
+### 📊 Strategy Evaluation
+- Simulated strategy return vs market return
+- Relative gain/loss in absolute and percentage terms
+- Directional accuracy
+- Visualization of cumulative returns
+
+## 🚧 What's Next
+
+- Sentiment-based features (news, Twitter)
+- LSTM or GRU for temporal dependencies
+- Streamlit dashboard for interactive visualization
+- Hyperparameter tuning with Optuna
+
+## 🛠 Getting Started
 
 ```bash
 pip install -r requirements.txt
